@@ -1,6 +1,6 @@
 <?php
 /* 
-  File: api/data/temperature.php
+  File: api/util/converter.php
 
   This is a part of ArduinoWS project.
   (c) 2013- Matej Repinc <mrepinc@gmail.com> 
@@ -19,20 +19,14 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-include("./../lib/data.php");
+class Converter {
+  public static function CtoF($C) {
+    return $C * (9/5) + 32;
+  }
   
-$err = array("status" => "fail", "description" => "");
-$range = $_GET["range"];
-if( $range == null) {
-  $err["description"] = "Missing range!";
-  echo json_encode($err);
-  die(); 
-}
-if(RangeEnum::StrToRange($range) == RangeEnum::INVALID) {
-  $err["description"] = "Invalid range!";
-  echo json_encode($err);
-  die();
+  public static function StrTo1DigitFloat($str) {
+    return (float)(number_format((float)$str,1, '.',''));
+  }
 }
 
-echo json_encode(DataFetcher::getData(KindEnum::KindToStr(KindEnum::TEMPERATURE), RangeEnum::StrToRange($range)));
 ?>

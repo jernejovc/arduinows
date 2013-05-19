@@ -1,6 +1,6 @@
 <?php
 /* 
-  File: api/data/temperature.php
+  File: api/data/pressure.php
 
   This is a part of ArduinoWS project.
   (c) 2013- Matej Repinc <mrepinc@gmail.com> 
@@ -34,5 +34,5 @@ if(RangeEnum::StrToRange($range) == RangeEnum::INVALID) {
   die();
 }
 
-echo json_encode(DataFetcher::getData(KindEnum::KindToStr(KindEnum::TEMPERATURE), RangeEnum::StrToRange($range)));
+echo json_encode(DataFetcher::getData(KindEnum::KindToStr(KindEnum::PRESSURE), RangeEnum::StrToRange($range)));
 ?>

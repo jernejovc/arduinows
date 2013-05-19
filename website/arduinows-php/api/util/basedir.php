@@ -1,6 +1,6 @@
 <?php
 /* 
-  File: api/data/temperature.php
+  File: api/util/basedir.php
 
   This is a part of ArduinoWS project.
   (c) 2013- Matej Repinc <mrepinc@gmail.com> 
@@ -18,21 +18,12 @@
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-include("./../lib/data.php");
-  
-$err = array("status" => "fail", "description" => "");
-$range = $_GET["range"];
-if( $range == null) {
-  $err["description"] = "Missing range!";
-  echo json_encode($err);
-  die(); 
-}
-if(RangeEnum::StrToRange($range) == RangeEnum::INVALID) {
-  $err["description"] = "Invalid range!";
-  echo json_encode($err);
-  die();
+class BaseDir {
+  public static function dir() {
+    $ds = DIRECTORY_SEPARATOR;
+    $base_dir = realpath(dirname(__FILE__)  . $ds . '..') . $ds;
+    return $base_dir;
+  }
 }
 
-echo json_encode(DataFetcher::getData(KindEnum::KindToStr(KindEnum::TEMPERATURE), RangeEnum::StrToRange($range)));
 ?>

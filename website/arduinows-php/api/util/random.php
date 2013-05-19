@@ -1,6 +1,6 @@
 <?php
 /* 
-  File: api/data/temperature.php
+  File: api/util/random.php
 
   This is a part of ArduinoWS project.
   (c) 2013- Matej Repinc <mrepinc@gmail.com> 
@@ -19,20 +19,15 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-include("./../lib/data.php");
-  
-$err = array("status" => "fail", "description" => "");
-$range = $_GET["range"];
-if( $range == null) {
-  $err["description"] = "Missing range!";
-  echo json_encode($err);
-  die(); 
-}
-if(RangeEnum::StrToRange($range) == RangeEnum::INVALID) {
-  $err["description"] = "Invalid range!";
-  echo json_encode($err);
-  die();
+class Random {
+  public static function string($length=4096) {
+    $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&/()=?*+';
+    $string = '';
+    for ($i = 0; $i < $length; $i++) {
+        $string .= $chars[rand(0, strlen($chars) - 1)];
+    }
+    return $string;
+  }
 }
 
-echo json_encode(DataFetcher::getData(KindEnum::KindToStr(KindEnum::TEMPERATURE), RangeEnum::StrToRange($range)));
 ?>
