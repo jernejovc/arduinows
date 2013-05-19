@@ -1,8 +1,13 @@
 #ArduinoWS API
 
 ##Purpose
-This is an API for gathering data and putting data in the database. It has two parts, "public" API (`data`) and "private" API (`put`).  
-Returned data and responses are encoded using JSON.
+This is an API for gathering data and putting data in the database, and it also serves as a query tool for current and historical weather data. 
+It has two parts, "public" API (`data`) and "private" API (`put`).
+
+**Note:**
+* Returned data and responses are encoded using JSON;
+* All calls to the API are issued through standard HTTP GET method. 
+
 ##Components
 
 ###api/info.php
@@ -56,7 +61,7 @@ Return values:
 * dew: °C or °F (fahr=true).
         
 ####api/data/temperature.php
-Returns the temperature values.
+Returns the temperature values for specified range.
         
 Return format: 
 ```json
@@ -74,7 +79,46 @@ Input parameters:
   * valid values: true;
   * effect: uses °F instead of °C.
 
+####api/data/pressure.php
+Returns the pressure values for specified range.
+        
+**Return format:** 
+```json
+{
+  "labels" : "[label1, label2, label3, ... , labeln]",
+  "data"   : "[data1, data2, data3, ... , datan]"
+}
+```
+        
+**Input parameters:**
+* range:
+  * valid values: [`dayfull`, `day`, `week`, `month`, `3months`, `year`, `all`];
+  * effect: Returned pressure range.
+
+**Note:**
+* Values are returned in hPa (mbar).
+
+####api/data/humidity.php
+Returns the humidity values for specified range.
+        
+**Return format:** 
+```json
+{
+  "labels" : "[label1, label2, label3, ... , labeln]",
+  "data"   : "[data1, data2, data3, ... , datan]"
+}
+```
+        
+**Input parameters:**
+* range:
+  * valid values: [`dayfull`, `day`, `week`, `month`, `3months`, `year`, `all`];
+  * effect: Returned humidity range.
+
+**Note:**
+* Values are returned in %RH (relative humidity).
+
 ---
+
 
 ###api/put
 ---
