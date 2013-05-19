@@ -4,7 +4,7 @@ ArduinoWS website & data collection tool installation
 Required software
 -----------------
 
-* Web server (Apache, Lighttpd) with PHP 5.x
+* Web server (Apache, Lighttpd) with PHP 5.3+
 * MySQL database
 
 Installation
