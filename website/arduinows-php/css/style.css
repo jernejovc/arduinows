@@ -1,13 +1,11 @@
 body {
   display: block;
   margin: auto;
-  width:80%;
+  width:90%;
 }
 
-header, footer {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+footer {
+  text-align: center;
 }
 
 content {
@@ -21,8 +19,31 @@ element {
     height: 2px;
 }
 
+#div_currentdata {
+  display: inline-block;
+  vertical-align: top;
+  width:25%;
+}
+
+#div_graphs {
+  display:inline-block;
+  width: 65%;
+}
+
+
 #container {
   min-width: 400px; 
   height: 400px; 
   margin: 0 auto;
+}
+
+#graph_loading_overlay {
+  display: block;
+  margin: auto;
+  width:100%;
+}
+
+.graph_loading_overlay img {
+  display: block;
+  margin: auto;
 }

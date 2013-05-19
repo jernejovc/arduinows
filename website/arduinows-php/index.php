@@ -10,6 +10,7 @@
 <script src="js/highcharts/js/highcharts.js"></script>
 <script src="js/highcharts/js/modules/exporting.js"></script>
 </head>
+
 <body>
 
   <header>
@@ -18,22 +19,65 @@
   </header>
   <hr/>
   <content>
-  Data time: <span id="span_time"></span> <br/>
-  Temperature: <span id="span_temperature"></span> <br/>
-  Humidity: <span id="span_humidity"></span> <br/>
-  Pressure: <span id="span_pressure"></span><br/>
-  Dew: <span id="span_dew"></span><br/>
+  <div id="div_currentdata">
+  <h3 align="center">Current data</h3>
+  <h5>Data time</h5>   <span id="span_time"></span>
+  <h5>Temperature</h5> <span id="span_temperature"></span>°C
+  <h5>Humidity</h5>    <span id="span_humidity"></span>%
+  <h5>Pressure</h5>    <span id="span_pressure"></span>hPa
+  <h5>Dew</h5>         <span id="span_dew"></span>°C
+  </div>
   
-  Choose timeline: 
-  <select id="temperature_timeline_select">
-    <option value="day" selected="selected">1 day (avg. per hour)</option>
-    <option value="month">1 month (avg. per day)</option>
-    <option value="3months">3 months (avg. per day)</option>
-    <option value="1year">1 year (avg. per week)</option>
-    <option value="all">All (avg. per week)</option>
-  </select> 
-  <div id="temperature_graph"></div>
-  
+  <div id="div_graphs">
+    <h3 align="center"> Temperature </h3>
+    Choose timeline: 
+    <select id="temperature_timeline_select">
+      <option value="dayfull" >1 day (all data)</option>
+      <option value="day" selected="selected">1 day (avg. per hour)</option>
+      <option value="week">1 week (avg. per 6 hours)</option>
+      <option value="month">1 month (avg. per day)</option>
+      <option value="3months">3 months (avg. per day)</option>
+      <option value="year">1 year (avg. per week)</option>
+      <option value="all">All (avg. per week)</option>
+    </select> 
+    <div id="temperature_graph_loading_overlay" class="graph_loading_overlay">
+        <img src="img/ajax-loader.gif" alt="loading..."/>
+    </div>
+    <div id="temperature_graph"></div>
+    
+    <h3 align="center"> Pressure </h3>
+    Choose timeline: 
+    <select id="pressure_timeline_select">
+      <option value="dayfull" >1 day (all data)</option>
+      <option value="day" selected="selected">1 day (avg. per hour)</option>
+      <option value="week">1 week (avg. per 6 hours)</option>
+      <option value="month">1 month (avg. per day)</option>
+      <option value="3months">3 months (avg. per day)</option>
+      <option value="year">1 year (avg. per week)</option>
+      <option value="all">All (avg. per week)</option>
+    </select> 
+    <div id="pressure_graph_loading_overlay" class="graph_loading_overlay">
+        <img src="img/ajax-loader.gif" alt="loading..."/>
+    </div>
+    <div id="pressure_graph"></div>
+    
+    <h3 align="center"> Humidity </h3>
+    Choose timeline: 
+    <select id="humidity_timeline_select">
+      <option value="dayfull" >1 day (all data)</option>
+      <option value="day" selected="selected">1 day (avg. per hour)</option>
+      <option value="week">1 week (avg. per 6 hours)</option>
+      <option value="month">1 month (avg. per day)</option>
+      <option value="3months">3 months (avg. per day)</option>
+      <option value="year">1 year (avg. per week)</option>
+      <option value="all">All (avg. per week)</option>
+    </select> 
+    <div id="humidity_graph_loading_overlay" class="graph_loading_overlay">
+        <img src="img/ajax-loader.gif" alt="loading..."/>
+    </div>
+    <div id="humidity_graph"></div>
+    
+  </div>
   </content>
   <hr/>
   <footer>
