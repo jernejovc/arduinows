@@ -19,7 +19,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-include("../database.php");
+include("../lib/database.php");
 
 $key   = $_GET["key"];
 $temp  = $_GET["temperature"];
