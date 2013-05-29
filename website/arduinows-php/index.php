@@ -1,4 +1,16 @@
 <?php include 'config.php';
+
+function print_chart_select($id) {
+  echo '<select id="'.$id.'">
+    <option value="dayfull" >1 day (all data)</option>
+    <option value="day" selected="selected">1 day (avg. per hour)</option>
+    <option value="week">1 week (avg. per 6 hours)</option>
+    <option value="month">1 month (avg. per day)</option>
+    <option value="3months">3 months (avg. per day)</option>
+    <option value="year">1 year (avg. per week)</option>
+    <option value="all">All (avg. per week)</option>
+  </select>';
+}
 ?>
 
 <html>
@@ -6,7 +18,7 @@
 <title> <?php echo $SITE_NAME; ?> </title>
 <link rel="stylesheet" type="text/css" href="css/style.css" media="screen" />
 <script src="js/jquery-1.9.1.min.js"></script>
-<script src="js/user_script.js"></script>
+<script src="js/arduinows.js"></script>
 <script src="js/highcharts/js/highcharts.js"></script>
 <script src="js/highcharts/js/modules/exporting.js"></script>
 </head>
@@ -30,32 +42,16 @@
   
   <div id="div_graphs">
     <h3 align="center"> Temperature </h3>
-    Choose timeline: 
-    <select id="temperature_timeline_select">
-      <option value="dayfull" >1 day (all data)</option>
-      <option value="day" selected="selected">1 day (avg. per hour)</option>
-      <option value="week">1 week (avg. per 6 hours)</option>
-      <option value="month">1 month (avg. per day)</option>
-      <option value="3months">3 months (avg. per day)</option>
-      <option value="year">1 year (avg. per week)</option>
-      <option value="all">All (avg. per week)</option>
-    </select> 
+    Choose timeline:
+    <?php print_chart_select("temperature_timeline_select"); ?>
     <div id="temperature_graph_loading_overlay" class="graph_loading_overlay">
         <img src="img/ajax-loader.gif" alt="loading..."/>
     </div>
     <div id="temperature_graph"></div>
     
     <h3 align="center"> Pressure </h3>
-    Choose timeline: 
-    <select id="pressure_timeline_select">
-      <option value="dayfull" >1 day (all data)</option>
-      <option value="day" selected="selected">1 day (avg. per hour)</option>
-      <option value="week">1 week (avg. per 6 hours)</option>
-      <option value="month">1 month (avg. per day)</option>
-      <option value="3months">3 months (avg. per day)</option>
-      <option value="year">1 year (avg. per week)</option>
-      <option value="all">All (avg. per week)</option>
-    </select> 
+    Choose timeline:
+    <?php print_chart_select("pressure_timeline_select"); ?>
     <div id="pressure_graph_loading_overlay" class="graph_loading_overlay">
         <img src="img/ajax-loader.gif" alt="loading..."/>
     </div>
@@ -63,15 +59,7 @@
     
     <h3 align="center"> Humidity </h3>
     Choose timeline: 
-    <select id="humidity_timeline_select">
-      <option value="dayfull" >1 day (all data)</option>
-      <option value="day" selected="selected">1 day (avg. per hour)</option>
-      <option value="week">1 week (avg. per 6 hours)</option>
-      <option value="month">1 month (avg. per day)</option>
-      <option value="3months">3 months (avg. per day)</option>
-      <option value="year">1 year (avg. per week)</option>
-      <option value="all">All (avg. per week)</option>
-    </select> 
+    <?php print_chart_select("humidity_timeline_select"); ?>
     <div id="humidity_graph_loading_overlay" class="graph_loading_overlay">
         <img src="img/ajax-loader.gif" alt="loading..."/>
     </div>
