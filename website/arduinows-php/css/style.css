@@ -50,13 +50,6 @@ element {
   width: 65%;
 }
 
-
-#container {
-  min-width: 400px; 
-  height: 400px; 
-  margin: 0 auto;
-}
-
 #graph_loading_overlay {
   display: block;
   margin: auto;
