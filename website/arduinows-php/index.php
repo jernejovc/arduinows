@@ -38,7 +38,10 @@ function print_chart_select($id) {
 <head>
 <title> <?php echo $SITE_NAME; ?> </title>
 <link rel="stylesheet" type="text/css" href="css/style.css" media="screen" />
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
 <script src="js/jquery-1.9.1.min.js"></script>
+<!-- <script src="js/jquery.ui.tabs.min.js"></script> -->
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <script src="js/arduinows.js"></script>
 <script src="js/highcharts/js/highcharts.js"></script>
 <script src="js/highcharts/js/modules/exporting.js"></script>
@@ -62,30 +65,38 @@ function print_chart_select($id) {
   </div>
   
   <div id="div_graphs">
-    <h3 align="center"> Temperature </h3>
-    Choose timeline:
-    <?php print_chart_select("temperature_timeline_select"); ?>
-    <div id="temperature_graph_loading_overlay" class="graph_loading_overlay">
-        <img src="img/ajax-loader.gif" alt="loading..."/>
+    <div id="graph_tabs">
+      <ul>
+        <li><a href="#temperature_tab">Temperature</a></li>
+        <li><a href="#pressure_tab">Pressure</a></li>
+        <li><a href="#humidity_tab">Humidity</a></li>
+      </ul>
+      <div id="temperature_tab">
+<!--         <h3 align="center"> Temperature </h3> -->
+        Choose timeline:
+        <?php print_chart_select("temperature_timeline_select"); ?>
+        <div id="temperature_graph_loading_overlay" class="graph_loading_overlay">
+            <img src="img/ajax-loader.gif" alt="loading..."/>
+        </div>
+        <div id="temperature_graph"></div>
+      </div>
+      <div id="pressure_tab">
+        Choose timeline:
+        <?php print_chart_select("pressure_timeline_select"); ?>
+        <div id="pressure_graph_loading_overlay" class="graph_loading_overlay">
+            <img src="img/ajax-loader.gif" alt="loading..."/>
+        </div>
+        <div id="pressure_graph"></div>
+      </div>
+      <div id="humidity_tab">
+        Choose timeline: 
+        <?php print_chart_select("humidity_timeline_select"); ?>
+        <div id="humidity_graph_loading_overlay" class="graph_loading_overlay">
+            <img src="img/ajax-loader.gif" alt="loading..."/>
+        </div>
+        <div id="humidity_graph"></div>
+      </div>
     </div>
-    <div id="temperature_graph"></div>
-    
-    <h3 align="center"> Pressure </h3>
-    Choose timeline:
-    <?php print_chart_select("pressure_timeline_select"); ?>
-    <div id="pressure_graph_loading_overlay" class="graph_loading_overlay">
-        <img src="img/ajax-loader.gif" alt="loading..."/>
-    </div>
-    <div id="pressure_graph"></div>
-    
-    <h3 align="center"> Humidity </h3>
-    Choose timeline: 
-    <?php print_chart_select("humidity_timeline_select"); ?>
-    <div id="humidity_graph_loading_overlay" class="graph_loading_overlay">
-        <img src="img/ajax-loader.gif" alt="loading..."/>
-    </div>
-    <div id="humidity_graph"></div>
-    
   </div>
   </content>
   <hr/>

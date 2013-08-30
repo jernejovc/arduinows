@@ -48,121 +48,57 @@ $(document).ready(function(){
 });
 
 function load_temperature_data(range) {
-  $('#temperature_graph_loading_overlay').show()
-  $.getJSON('api/data/temperature.php?range='+range, function(data) {
-    tempdata = eval(data["data"]);
-    labels = eval(data["labels"]);
-    $('#temperature_graph_loading_overlay').hide();
-    $('#temperature_graph').highcharts({
-            chart: {
-                type: 'line',
-                marginRight: 130,
-                marginBottom: 25
-            },
-            title: {
-                text: 'Temperature',
-                x: -20 //center
-            },
-            subtitle: {
-                text: '',
-                x: -20
-            },
-            xAxis: {
-                categories: labels
-            },
-            yAxis: {
-                title: {
-                    text: 'Temperature (°C)'
-                },
-                plotLines: [{
-                    value: 0,
-                    width: 1,
-                    color: '#808080'
-                }]
-            },
-            tooltip: {
-                valueSuffix: '°C'
-            },
-            series: [{
-                name: 'Temperature',
-                data: tempdata,
-		showInLegend: false
-            }]
-        });
-  });
+  load_data("temperature", range, "Temperature", "Temperature (°C)", "°C", "temperature");
 }
 
 function load_pressure_data(range) {
-  $('#pressure_graph_loading_overlay').show()
-  $.getJSON('api/data/pressure.php?range='+range, function(data) {
-    data = eval(data["data"]);
-    labels = eval(data["labels"]);
-    $('#pressure_graph_loading_overlay').hide();
-    $('#pressure_graph').highcharts({
-            chart: {
-                type: 'line',
-                marginRight: 130,
-                marginBottom: 25
-            },
-            title: {
-                text: 'Pressure',
-                x: -20 //center
-            },
-            subtitle: {
-                text: '',
-                x: -20
-            },
-            xAxis: {
-                categories: labels
-            },
-            yAxis: {
-                title: {
-                    text: 'Pressure (hPa)'
-                },
-                plotLines: [{
-                    value: 0,
-                    width: 1,
-                    color: '#808080'
-                }]
-            },
-            tooltip: {
-                valueSuffix: 'hPa'
-            },
-            series: [{
-                name: 'pressure',
-                data: data,
-                showInLegend: false
-            }]
-        });
-  });
+  load_data("pressure", range, "Pressure", "Pressure (hPa)", "hPa", "pressure"); 
 }
 
 function load_humidity_data(range) {
-  $('#humidity_graph_loading_overlay').show()
-  $.getJSON('api/data/humidity.php?range='+range, function(data) {
-    data = eval(data["data"]);
-    labels = eval(data["labels"]);
-    $('#humidity_graph_loading_overlay').hide();
-    $('#humidity_graph').highcharts({
+  load_data("humidity", range, "Humidity", "Humidity (%)", "%", "humidity");
+}
+
+function load_data(type, range, title, yaxis_title, value_suffix, series_name) {
+  $('#'+type+'_graph_loading_overlay').show()
+  $.getJSON('api/data/'+type+'.php?range='+range, function(json_data) {
+    data = eval(json_data["data"]);
+    labels = new Array();
+    if(false && range == "day"){
+      from = eval(json_data["from"]);
+      to   = eval(json_data["to"]);
+      for(var i = 0; i < from.length; ++i) {
+        labels.push(from[i]+":00 - "+to[i]+":00");
+      }
+    } else if(false && range == "week") {
+      from = eval(json_data["from"]);
+      to   = eval(json_data["to"]);
+      date = eval(json_data["date"]);
+      for(var i = 0; i < from.length; ++i) {
+        labels.push(date[i] + ", " + from[i]+":00 - "+to[i]+":00");
+      }
+    }
+    else {
+      labels = eval(json_data["time"]);
+    }
+    //labels = eval(data["labels"]);
+    $('#'+type+'_graph_loading_overlay').hide();
+    $('#'+type+'_graph').highcharts({
             chart: {
-                type: 'line',
-                marginRight: 130,
+                type: 'spline',
+//                 marginRight: 130,
                 marginBottom: 25
             },
             title: {
-                text: 'Humidity',
+                text: title,
                 x: -20 //center
-            },
-            subtitle: {
-                text: '',
-                x: -20
             },
             xAxis: {
                 categories: labels
             },
             yAxis: {
                 title: {
-                    text: 'Humidity (%)'
+                    text: yaxis_title
                 },
                 plotLines: [{
                     value: 0,
@@ -171,10 +107,10 @@ function load_humidity_data(range) {
                 }]
             },
             tooltip: {
-                valueSuffix: '%'
+                valueSuffix: value_suffix
             },
             series: [{
-                name: 'humidity',
+                name: series_name,
                 data: data,
                 showInLegend: false
             }]
