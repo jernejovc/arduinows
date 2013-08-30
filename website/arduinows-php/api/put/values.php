@@ -66,15 +66,13 @@ if($has_errors) {
 }
 //else add values to the database
 else {
+  $key = $database->getWeatherStationId($key);
+  $stmt = $conn->prepare("Insert Into weather_data(station, temperature, humidity, pressure, dew) VALUES(?,?,?,?,?)");
+  $stmt->bind_param("ddddd", $key, $temp, $hum, $press, $dew);
+  $stmt->execute();
 
-
-$stmt = $conn->prepare("Insert Into weather_data(station, temperature, humidity, pressure, dew) VALUES(?,?,?,?,?)");
-$stmt->bind_param("sdddd", $key, $temp, $hum, $press, $dew);
-$stmt->execute();
-
-$arr = array("status" => "ok");
-echo json_encode($arr);
-
+  $arr = array("status" => "ok");
+  echo json_encode($arr);
 }
 
 ?>
