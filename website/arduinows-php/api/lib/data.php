@@ -105,12 +105,14 @@ class KindEnum {
 
 class DataFetcher {
 /** <Returns data for temperature, humidity and pressure for specified range.>
-  * @param $p_kind: What kind of data to return(@see KindEnum::KindToStr)
-  * @param $p_range: The range of data to be returned (@see RangeEnum::StrToRange)
-  * @return Array with two arrays, "data" and "labels", labels[i] represents label 
-  * for data[i].
+  * @param $kind: What kind of data to return(@see KindEnum::KindToStr)
+  * @param $range: The range of data to be returned (@see RangeEnum::StrToRange)
+  * @param $fahrenheit: Use °F instead of the default °C (if fetching temperature, 
+  * otherwise value is ignored).
+  * @return Array with at least two arrays, "data" and "time", time[i] represents time
+  * at which for data[i] was taken.
   */
-  public static function getData($kind, $range) {
+  public static function getData($kind, $range, $fahrenheit=false) {
     $database = new DB;
     $database->connect();
     $conn = $database->connection();
@@ -120,11 +122,15 @@ class DataFetcher {
     }
     
     $result = null;
-    $arr = array("labels" => array(),
+    $arr = array("time" => array(),
                  "data" => array());
     
     switch($range) {
       case RangeEnum::DAY: {
+        $arr = array("from" => array(),
+                     "to"   => array(),
+                     "time" => array(),
+                     "data" => array());
         $sql = sprintf("SELECT HOUR( timestamp ) AS hour , AVG( %s ) as avg_%s
                           FROM `weather_data`
                           WHERE UNIX_TIMESTAMP( SYSDATE( ) ) - UNIX_TIMESTAMP( timestamp ) <86400
@@ -133,9 +139,17 @@ class DataFetcher {
         $result = $conn->query($sql);
   
         while($row = $result->fetch_assoc()) {
-          $label = sprintf("%d:00 - %d:00", $row["hour"], $row["hour"] +1);
-          array_push($arr["labels"], $label);
-          array_push($arr["data"], Converter::StrTo1DigitFloat($row[sprintf("avg_%s", $kind)]));
+          $hour = $row["hour"];
+          array_push($arr["from"], $hour * 1);
+          array_push($arr["to"], $hour + 1);
+          array_push($arr["time"], sprintf("%d:00-%d:00", $hour*1, $hour+1));
+          
+          $value = $row[sprintf("avg_%s", $kind)];
+          if($kind == KindEnum::KindToStr(KindEnum::TEMPERATURE)) {
+            if($fahrenheit)
+              $value = Converter::CtoF($value);
+          }
+          array_push($arr["data"], Converter::StrTo1DigitFloat($value));
         }
         break;
       }
@@ -146,53 +160,101 @@ class DataFetcher {
                          ORDER BY timestamp", $kind);
         $result = $conn->query($sql);
         while($row = $result->fetch_assoc()) {
-          array_push($arr["labels"], $row["time"]);
-          array_push($arr["data"], Converter::StrTo1DigitFloat($row[$kind]));
+          array_push($arr["time"], $row["time"]);
+          $value = $row[$kind];
+          if($kind == KindEnum::KindToStr(KindEnum::TEMPERATURE)) {
+            if($fahrenheit)
+              $value = Converter::CtoF($value);
+          }
+          array_push($arr["data"], Converter::StrTo1DigitFloat($value));
         }
         break;
       }
       case RangeEnum::WEEK: {
+        $arr = array("from" => array(),
+                     "to"   => array(),
+                     "date"  => array(),
+                     "data" => array());
+        $sql = sprintf("SELECT DATE(timestamp) AS day, HOUR( timestamp ) AS hour , AVG( %s ) as avg_%s
+                          FROM `weather_data`
+                          WHERE (UNIX_TIMESTAMPx( SYSDATE( ) ) - UNIX_TIMESTAMP( timestamp )) < (86400 * 7)
+                          GROUP BY hour
+                          ORDER BY timestamp", $kind, $kind);
+        $result = $conn->query($sql);
+  
+        while($row = $result->fetch_assoc()) {
+          //$label = sprintf("%d:00 - %d:00", $row["hour"], $row["hour"] +1);
+          $hour = $row["hour"];
+          array_push($arr["from"], $hour * 1);
+          array_push($arr["to"], $hour + 1);
+          array_push($arr["time"], sprintf("%s %d:00-%d:00", $row["day"], $hour*1, $hour+1));
+          
+          $value = $row[sprintf("avg_%s", $kind)];
+          if($kind == KindEnum::KindToStr(KindEnum::TEMPERATURE)) {
+            if($fahrenheit)
+              $value = Converter::CtoF($value);
+          }
+          array_push($arr["data"], Converter::StrTo1DigitFloat($value));
+        }
         break;
       }
       case RangeEnum::MONTH: {
-        $sql = sprintf("SELECT DAY( timestamp ) AS day, MONTH(timestamp) as month, AVG(%s) as avg_%s
+        $sql = sprintf("SELECT DAY( timestamp ) AS day, MONTH(timestamp) as month, AVG(%s) as avg_%s,
+                        DAYOFYEAR(timestamp) AS day_year
                          FROM `weather_data`
                          WHERE UNIX_TIMESTAMP( SYSDATE( ) ) - UNIX_TIMESTAMP( timestamp ) < 86400 * 31
-                         GROUP BY day
-                         ORDER BY day", $kind, $kind);
+                         GROUP BY day_year
+                         ORDER BY timestamp", $kind, $kind);
         $result = $conn->query($sql);
         while($row = $result->fetch_assoc()) {
           $label = sprintf("%d.%d", $row["day"], $row["month"]);
-          array_push($arr["labels"], $label);
-          array_push($arr["data"], Converter::StrTo1DigitFloat($row[sprintf("avg_%s", $kind)]));
+          array_push($arr["time"], $label);
+          $value = $row[sprintf("avg_%s", $kind)];
+          if($kind == KindEnum::KindToStr(KindEnum::TEMPERATURE)) {
+            if($fahrenheit)
+              $value = Converter::CtoF($value);
+          }
+          array_push($arr["data"], Converter::StrTo1DigitFloat($value));
         }
         break;
       }
       case RangeEnum::THREEMONTHS: {
-        $sql = sprintf("SELECT DAY( timestamp ) AS day, MONTH(timestamp) as month, AVG(%s) as avg_%s
+        $sql = sprintf("SELECT DAY( timestamp ) AS day, MONTH(timestamp) as month, AVG(%s) as avg_%s,
+                        (100000*YEAR(timestamp)) + (100*MONTH(timestamp)) + DAY(timestamp) as day_numerical
                          FROM `weather_data`
                          WHERE UNIX_TIMESTAMP( SYSDATE( ) ) - UNIX_TIMESTAMP( timestamp ) < 86400 * 90
-                         GROUP BY day
-                         ORDER BY day", $kind, $kind);
+                         GROUP BY day_numerical
+                         ORDER BY timestamp", $kind, $kind);
         $result = $conn->query($sql);
         while($row = $result->fetch_assoc()) {
           $label = sprintf("%d.%d", $row["day"], $row["month"]);
-          array_push($arr["labels"], $label);
-          array_push($arr["data"], Converter::StrTo1DigitFloat($row[sprintf("avg_%s", $kind)]));
+          array_push($arr["time"], $label);
+          $value = $row[sprintf("avg_%s", $kind)];
+          if($kind == KindEnum::KindToStr(KindEnum::TEMPERATURE)) {
+            if($fahrenheit)
+              $value = Converter::CtoF($value);
+          }
+          array_push($arr["data"], Converter::StrTo1DigitFloat($value));
         }
         break;
       }
       case RangeEnum::YEAR: {
-        $sql = sprintf("SELECT WEEK( timestamp ) AS week, YEAR(timestamp) as year, AVG(%s) as avg_%s
+        $sql = sprintf("SELECT timestamp, WEEK( timestamp ) AS week, YEAR(timestamp) as year, AVG(%s) as avg_%s,
+                        (100*YEAR(timestamp)) + 100*WEEK(timestamp) as week_numerical
                          FROM `weather_data`
                          WHERE UNIX_TIMESTAMP( SYSDATE( ) ) - UNIX_TIMESTAMP( timestamp ) < 86400 * 365
-                         GROUP BY week
-                         ORDER BY week", $kind, $kind);
+                         GROUP BY week_numerical
+                         ORDER BY timestamp", $kind, $kind);
         $result = $conn->query($sql);
         while($row = $result->fetch_assoc()) {
           $label = sprintf("%d/%d", $row["week"], $row["year"]);
-          array_push($arr["labels"], $label);
-          array_push($arr["data"], Converter::StrTo1DigitFloat($row[sprintf("avg_%s", $kind)]));
+          array_push($arr["time"], $label);
+          $value = $row[sprintf("avg_%s", $kind)];
+          if($kind == KindEnum::KindToStr(KindEnum::TEMPERATURE)) {
+            if($fahrenheit)
+              $value = Converter::CtoF($value);
+          }
+          array_push($arr["data"], Converter::StrTo1DigitFloat($value));
         }
         break;
       }
@@ -204,8 +266,13 @@ class DataFetcher {
         $result = $conn->query($sql);
         while($row = $result->fetch_assoc()) {
           $label = sprintf("%d/%d", $row["week"], $row["year"]);
-          array_push($arr["labels"], $label);
-          array_push($arr["data"], Converter::StrTo1DigitFloat($row[sprintf("avg_%s", $kind)]));
+          array_push($arr["time"], $label);
+          $value = $row[sprintf("avg_%s", $kind)];
+          if($kind == KindEnum::KindToStr(KindEnum::TEMPERATURE)) {
+            if($fahrenheit)
+              $value = Converter::CtoF($value);
+          }
+          array_push($arr["data"], Converter::StrTo1DigitFloat($value));
         }
         break;
       }
