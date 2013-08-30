@@ -34,5 +34,12 @@ if(RangeEnum::StrToRange($range) == RangeEnum::INVALID) {
   die();
 }
 
-echo json_encode(DataFetcher::getData(KindEnum::KindToStr(KindEnum::TEMPERATURE), RangeEnum::StrToRange($range)));
+$fahrenheit = false;
+if($_GET["fahr"] != null && $_GET["fahr"] == "true") 
+  $fahrenheit = true;
+
+$data = DataFetcher::getData(KindEnum::KindToStr(KindEnum::TEMPERATURE), 
+                             RangeEnum::StrToRange($range), 
+                             $fahrenheit);
+echo json_encode($data);
 ?>
