@@ -32,11 +32,23 @@ $has_errors = false;
 
 //Sanity checks
 if($name == null) {
-  $err["error"] = $err["error"] . "Missing name! ";
+  $err["error"] = $err["error"] . "Missing name. ";
   $has_errors = true;
 }
 if($description == null) {
-  $err["error"] = $err["error"] . "Missing description! ";
+  $err["error"] = $err["error"] . "Missing description. ";
+  $has_errors = true;
+}
+if($name != null && strlen($name) > 50) {
+  $err["error"] = $err["error"] . "Maximum length of name is 50 characters. ";
+  $has_errors = true;
+}
+if($description != null && strlen($description) > 200) {
+  $err["error"] = $err["error"] . "Maximum length of description is 200 characters. ";
+  $has_errors = true;
+}
+if($location != null && strlen($location) > 50) {
+  $err["error"] = $err["error"] . "Maximum length of location is 50 characters. ";
   $has_errors = true;
 }
 
@@ -46,16 +58,19 @@ if($has_errors) {
 }
 //else add the station to the database
 else {
-
-$md5sum = md5(Random::string());
+$hash = hash("sha256", Random::string());
 $arr = array("status" => "ok",
-             "hash" => $md5sum);
+             "hash" => $hash,
+             "name" => $name,
+             "description" => $description,
+             "location" => $location);
 
 $database = new DB();
 $conn = $database->connect();
+$stmt = $conn->prepare("Insert Into stations(hash, name, description, location) VALUES(?,?,?,?)");
+$stmt->bind_param("ssss", $hash, $name, $description, $location);
+$stmt->execute();
 
-$station_id = $database->getWeatherStationId("20d76586c38e13d7b179a342b9c54bbb");
-echo "Station id:{$station_id} <br>";
 echo json_encode($arr);
 }
 
