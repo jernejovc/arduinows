@@ -62,11 +62,11 @@ Sensirion tempSensor = Sensirion(sht75_dataPin, sht75_clockPin);
  *  the Ethernet Shield. If you can't find it, you can use a the one that's
  *  already set or set a fictional one.
  */
-char* host = "host.example.com";
+char host[] = "host.example.com";
 
-String api("/api/");
+char api[] = "/api/";
 
-String key("sha-256 value");
+char key[] = "sha-256 value";
 
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0x01 };
 
@@ -80,7 +80,6 @@ int num_cycles;
 
 // The server is listening on port 80
 EthernetServer server(80);
-
 
 // Support function that emulates a soft reset of the board.
 void soft_reset(){
@@ -280,6 +279,7 @@ void send_data_to_server() {
     Serial.println("successful!");
     Serial.print("GET ");
     Serial.print(api);
+    Serial.print("put/values.php");
     Serial.print("?key=");
     Serial.print(key);
     Serial.print("&temperature=");
@@ -357,7 +357,7 @@ void setup(){
   
   delay(100);
   measure_sensor_values();
-  send_data_to_server();  
+  send_data_to_server();
 }
 
 /**
