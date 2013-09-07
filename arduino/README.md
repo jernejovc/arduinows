@@ -21,7 +21,7 @@ Deployment
 ----------
 
 When compiling sketch and deploying weather station, be sure to:
-* Add [BMP085 library](libraries/bmp085) to your Arduino libraries folder;
+* Add [BMP085 library](libraries/BMP085) to your Arduino libraries folder;
 * Add [Sensirion library](http://playground.arduino.cc/Code/Sensirion) to your Arduino libraries folder;
 * Change configuration data for data collection server (API);
 * Have a DHCP server running on your network so that the station can configure Ethernet connection.
