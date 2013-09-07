@@ -70,6 +70,14 @@ char key[] = "sha-256 value";
 
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0x01 };
 
+/** If you want to use static IP, uncomment and edit the line below (only variable ip). 
+  */
+/* byte ip[] = { 192, 168, 0, 101 }
+  #ifndef STATICIP
+    #define STATICIP
+  #endif
+*/
+
 //Weather data
 float temperature;
 float temperature_bmp;
@@ -341,20 +349,23 @@ void setup(){
   Serial.println("Calibrating BMP085.");
   bmp085.Calibration();
   Serial.println("Connecting to network.");
+#ifdef STATICIP
+  Ethernet.begin(mac, ip);
+#else
   if (Ethernet.begin(mac) == 0) {
     Serial.println("Failed to configure Ethernet using DHCP!");
     while(true);
-  } else {
-    Serial.print("Connected, IP: ");
-    for(int i = 0; i < 4; ++i) {
-      Serial.print(Ethernet.localIP()[i]);
-      if(i != 3) {
-        Serial.print(".");
-      }
-    }
-    Serial.println();
   }
-  
+#endif  
+  Serial.print("Connected to network, IP: ");
+  for(int i = 0; i < 4; ++i) {
+    Serial.print(Ethernet.localIP()[i]);
+    if(i != 3) {
+      Serial.print(".");
+    }
+  }
+  Serial.println();
+
   delay(100);
   measure_sensor_values();
   send_data_to_server();
