@@ -16,10 +16,13 @@ This displays info about the API.
 Return format:
 ```json
 {
-  "name"         : "ArduinoWS API",
-  "description"  : "Arduino Weather Station API",
-  "version"      : "0.1",
-  "url"          : "https://github.com/jernejovc/arduinows"
+  "name"          : "ArduinoWS API",
+  "description"   : "Arduino Weather Station API",
+  "version"       : "0.1.0",
+  "version_major" : 0,
+  "version_minor" : 1,
+  "version_patch" : 0,
+  "url"           : "https://github.com/jernejovc/arduinows"
 }
 ```
 
@@ -59,6 +62,16 @@ Return values:
 * pressure: hPa;
 * humidity: %;
 * dew: °C or °F (fahr=true).
+
+#### Valid data ranges
+The valid data ranges are passed to the API using 'range' parameter. They are as follows:
+* dayfull: Returns all data for last day;
+* day: Returns all data for last day, grouped by hour;
+* week: Returns all data for last week, grouped by hour;
+* month: Returns all data for last month, grouped by day;
+* 3months: Returns all data for three months, grouped by day;
+* year: Returns all data for last year, grouped by week;
+* all: Returns all data.
         
 ####api/data/temperature.php
 Returns the temperature values for specified range.
@@ -66,7 +79,9 @@ Returns the temperature values for specified range.
 Return format: 
 ```json
 {
-  "labels" : "[label1, label2, label3, ... , labeln]",
+  "from"   : "[from1, from2, from3, ...., fromn]",
+  "to"     : "[to1, to2, to3, ..., ton]",
+  "time"   : "[time1, time2, time3, ... , timen]",
   "data"   : "[data1, data2, data3, ... , datan]"
 }
 ```
@@ -85,7 +100,9 @@ Returns the pressure values for specified range.
 **Return format:** 
 ```json
 {
-  "labels" : "[label1, label2, label3, ... , labeln]",
+  "from"   : "[from1, from2, from3, ...., fromn]",
+  "to"     : "[to1, to2, to3, ..., ton]",
+  "time"   : "[time1, time2, time3, ... , timen]",
   "data"   : "[data1, data2, data3, ... , datan]"
 }
 ```
@@ -104,7 +121,9 @@ Returns the humidity values for specified range.
 **Return format:** 
 ```json
 {
-  "labels" : "[label1, label2, label3, ... , labeln]",
+  "from"   : "[from1, from2, from3, ...., fromn]",
+  "to"     : "[to1, to2, to3, ..., ton]",
+  "time"   : "[time1, time2, time3, ... , timen]",
   "data"   : "[data1, data2, data3, ... , datan]"
 }
 ```
@@ -158,9 +177,12 @@ Adds a new weather station to the database.
 Return format: 
 ```json
 {
-    "status"    : "ok",
-    "hash"    : "md5 hash",
-    "error"    : "error"
+    "status"      : "ok",
+    "hash"        : "md5 hash",
+    "error"       : "error",
+    "name"        : "name passed in request",
+    "description" : "description passed in request",
+    "location"    : "location passed in request if present"
 }
 ```
 
