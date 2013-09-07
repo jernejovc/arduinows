@@ -25,7 +25,7 @@ function print_chart_select($id) {
   echo '<select id="'.$id.'">
     <option value="dayfull" >1 day (all data)</option>
     <option value="day" selected="selected">1 day (avg. per hour)</option>
-    <option value="week">1 week (avg. per 6 hours)</option>
+    <option value="week">1 week (avg. per hour)</option>
     <option value="month">1 month (avg. per day)</option>
     <option value="3months">3 months (avg. per day)</option>
     <option value="year">1 year (avg. per week)</option>

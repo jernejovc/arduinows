@@ -156,7 +156,7 @@ class DataFetcher {
       case RangeEnum::DAYFULL: {
         $sql = sprintf("SELECT TIME( timestamp ) AS time , %s
                          FROM `weather_data`
-                         WHERE UNIX_TIMESTAMP( SYSDATE( ) ) - UNIX_TIMESTAMP( timestamp ) <86400
+                         WHERE UNIX_TIMESTAMP( SYSDATE( ) ) - UNIX_TIMESTAMP( timestamp ) < 86400
                          ORDER BY timestamp", $kind);
         $result = $conn->query($sql);
         while($row = $result->fetch_assoc()) {
@@ -173,15 +173,14 @@ class DataFetcher {
       case RangeEnum::WEEK: {
         $arr = array("from" => array(),
                      "to"   => array(),
-                     "date"  => array(),
+                     "time"  => array(),
                      "data" => array());
         $sql = sprintf("SELECT DATE(timestamp) AS day, HOUR( timestamp ) AS hour , AVG( %s ) as avg_%s
                           FROM `weather_data`
-                          WHERE (UNIX_TIMESTAMPx( SYSDATE( ) ) - UNIX_TIMESTAMP( timestamp )) < (86400 * 7)
-                          GROUP BY hour
+                          WHERE UNIX_TIMESTAMP(SYSDATE()) - UNIX_TIMESTAMP(timestamp) < 86400 * 7
+                          GROUP BY day,hour
                           ORDER BY timestamp", $kind, $kind);
         $result = $conn->query($sql);
-  
         while($row = $result->fetch_assoc()) {
           //$label = sprintf("%d:00 - %d:00", $row["hour"], $row["hour"] +1);
           $hour = $row["hour"];
