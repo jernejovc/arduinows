@@ -106,18 +106,21 @@ void serve_client(EthernetClient client) {
   Serial.println("Got new client.");
   // HTTP Request ends with a blank line
   boolean currentLineIsBlank = true;
+  boolean firstLine = true;
   boolean json = false;
-  String line;
+  char line [100];
+  int line_idx = 0;
   while (client.connected()) {
     if (client.available()) {
       char c = client.read();
-      //Serial.write(c);
       if(c != '\n') {
-        line += c;
+        if(line_idx < 100) {
+          line[line_idx++] = c;
+        }
       }
       // If you've gotten to the end of the line (received a newline
       // character) and the line is blank, the http request has ended,
-      // so you can send a reply
+      // so we can send a reply
       if (c == '\n' && currentLineIsBlank) {
         // send a standard http response header
         client.println("HTTP/1.1 200 OK");
@@ -172,15 +175,25 @@ void serve_client(EthernetClient client) {
       if (c == '\n') {
         // we're starting a new line in response
         currentLineIsBlank = true;
-        
-        // if the response requests json data, set the flag
-        if(line.startsWith("GET /json ")) {
-          json = true;
+        line_idx = 0;
+        // First line contains GET 
+        if(firstLine) {
+          char getjson[] = "GET /json ";
+          boolean isjson = true;
+          for(int i = 0; i < 10; ++i) {
+            if(getjson[i] != line[i]) {
+              isjson = false;
+            }
+          }
+          if(isjson == true) {
+            json = true;
+          }
         }
+        firstLine = false;
+        
 #ifdef VERBOSE
         Serial.println(line);
 #endif
-        line = String();
       }
       else if (c != '\r') {
         // you've gotten a character on the current line
