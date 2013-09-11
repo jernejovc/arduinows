@@ -19,4 +19,4 @@ PHP website and data collection
 Website that shows pretty graphs and an API to which ArduinoWS sends weather data.
 More info in [website](website/README.md) folder.
 
-This is software used in my diploma thesis which can be found at ....
+This is software used in my diploma thesis which can be found at [this link](https://www.dropbox.com/s/7fwu3h0v0itm1gu/Matej-Repinc-diploma-final-v2.pdf).
