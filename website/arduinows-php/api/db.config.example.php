@@ -18,12 +18,12 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-$DB_HOST = "localhost";
-$DB_PORT = 3306;
-$DB_USER = "username";
-$DB_PASS = "password";
-$DB_DATABASE = "arduinows";
-$DB_PREFIX = "arduinows_";
-
+class DBConfig {
+public static $DB_HOST     = "localhost";
+public static $DB_PORT     = 3306;
+public static $DB_USER     = "username";
+public static $DB_PASS     = "password";
+public static $DB_DATABASE = "arduinows";
+public static $DB_PREFIX   = "arduinows_";
+}
 ?>
