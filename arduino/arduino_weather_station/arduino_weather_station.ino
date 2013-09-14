@@ -72,10 +72,11 @@ byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0x01 };
 
 /** If you want to use static IP, uncomment and edit the line below (only variable ip). 
   */
-/* byte ip[] = { 192, 168, 0, 101 }
-  #ifndef STATICIP
-    #define STATICIP
-  #endif
+/*
+byte ip[] = { 192, 168, 0, 101 };
+#ifndef STATICIP
+  #define STATICIP
+#endif
 */
 
 //Weather data
@@ -329,7 +330,7 @@ void send_data_to_server() {
   }
 #ifdef VERBOSE
   else {
-    Serial.print("FAILURE!");
+    Serial.println("FAILURE!");
   }
 #endif
   client.stop();
