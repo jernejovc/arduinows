@@ -135,7 +135,7 @@ void serve_client(EthernetClient client) {
         if(json) {
           client.println("Content-Type: application/json");
         } else {
-          client.println("Content-Type: text/html");
+          client.println("Content-Type: text/html; charset=utf-8");
         }
         client.println("Connection: close");
         client.println();
